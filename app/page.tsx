@@ -17,6 +17,8 @@ import { DashboardSkeleton } from '@/components/Skeleton';
 import PriceHeader from '@/components/PriceHeader';
 import HeroVerdict from '@/components/HeroVerdict';
 import SignalSummary from '@/components/SignalSummary';
+import PerformanceBadge from '@/components/PerformanceBadge';
+import CycleTimeline from '@/components/CycleTimeline';
 import DetailAccordion, { AccordionSection } from '@/components/DetailAccordion';
 import ScoreGauge from '@/components/ScoreGauge';
 import RSIMacroPanel from '@/components/RSIMacroPanel';
@@ -149,8 +151,14 @@ export default function DashboardPage() {
         }}
       />
 
+      {/* ═══ 신뢰 배지: 과거 성과 한줄 요약 ═══ */}
+      <PerformanceBadge grade={data.grade} />
+
       {/* ═══ Tier 2: SignalSummary — 3장 요약 카드 ═══ */}
       <SignalSummary data={data} />
+
+      {/* ═══ 반감기 사이클 위치 — "지금 어디인지" 직관 표시 ═══ */}
+      <CycleTimeline monthsSinceHalving={data.cycle?.monthsSinceHalving} />
 
       {/* ═══ Tier 3: 상세 분석 (접이식 아코디언) ═══ */}
       <DetailAccordion>
