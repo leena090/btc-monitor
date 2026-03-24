@@ -19,6 +19,8 @@ import HeroVerdict from '@/components/HeroVerdict';
 import SignalSummary from '@/components/SignalSummary';
 import PerformanceBadge from '@/components/PerformanceBadge';
 import CycleTimeline from '@/components/CycleTimeline';
+import RiskCalculator from '@/components/RiskCalculator';
+import BacktestPanel from '@/components/BacktestPanel';
 import DetailAccordion, { AccordionSection } from '@/components/DetailAccordion';
 import ScoreGauge from '@/components/ScoreGauge';
 import RSIMacroPanel from '@/components/RSIMacroPanel';
@@ -160,8 +162,24 @@ export default function DashboardPage() {
       {/* ═══ 반감기 사이클 위치 — "지금 어디인지" 직관 표시 ═══ */}
       <CycleTimeline monthsSinceHalving={data.cycle?.monthsSinceHalving} />
 
+      {/* ═══ 투자금 시뮬레이터 — "3억으로 얼마 투자?" ═══ */}
+      <RiskCalculator
+        data={{
+          grade: data.grade,
+          finalScore: data.finalScore,
+          tradeSetup: data.tradeSetup,
+          direction: data.direction,
+        }}
+        currentPrice={data.price ?? 0}
+      />
+
       {/* ═══ Tier 3: 상세 분석 (접이식 아코디언) ═══ */}
       <DetailAccordion>
+        {/* 과거 성과 백테스트 */}
+        <AccordionSection title="과거 성과 검증" icon="📊" subtitle="2015~2025 백테스트">
+          <BacktestPanel />
+        </AccordionSection>
+
         {/* 매매 셋업 (있을 때만) */}
         {data.tradeSetup && (
           <AccordionSection title="트레이드 셋업" icon="📊" subtitle="진입/손절/목표가">
