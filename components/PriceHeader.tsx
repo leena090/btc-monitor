@@ -18,29 +18,41 @@ interface Props {
 }
 
 export default function PriceHeader({ data }: Props) {
-  // 업비트 원화 가격 상태
+  // 업비트 원화 가격 + 실시간 환율 상태
   const [krwPrice, setKrwPrice] = useState<number | null>(null);
   const [krwChange, setKrwChange] = useState<number | null>(null);
+  const [usdKrwRate, setUsdKrwRate] = useState<number | null>(null);
 
-  // 업비트 API에서 BTC/KRW 가격 가져오기 (공개 API, 키 불필요)
+  // 업비트 BTC/KRW + 환율 동시 조회 (공개 API, 키 불필요)
   useEffect(() => {
-    const fetchUpbit = async () => {
+    const fetchData = async () => {
+      // 업비트 BTC/KRW 가격
       try {
         const res = await fetch('https://api.upbit.com/v1/ticker?markets=KRW-BTC');
-        if (!res.ok) return;
-        const [ticker] = await res.json();
-        if (ticker) {
-          setKrwPrice(ticker.trade_price);          // 현재가 (원)
-          setKrwChange(ticker.signed_change_rate * 100); // 24h 변동률 (%)
+        if (res.ok) {
+          const [ticker] = await res.json();
+          if (ticker) {
+            setKrwPrice(ticker.trade_price);
+            setKrwChange(ticker.signed_change_rate * 100);
+          }
         }
-      } catch {
-        // 업비트 API 실패 시 무시 — USD 가격은 정상 표시
-      }
+      } catch { /* 업비트 실패 시 무시 */ }
+
+      // 실시간 USD/KRW 환율 (업비트 USDT/KRW로 크립토 기준 환율 산출)
+      try {
+        const res = await fetch('https://api.upbit.com/v1/ticker?markets=KRW-USDT');
+        if (res.ok) {
+          const [ticker] = await res.json();
+          if (ticker) {
+            setUsdKrwRate(ticker.trade_price);
+          }
+        }
+      } catch { /* 환율 조회 실패 시 무시 */ }
     };
 
-    fetchUpbit();
-    // 30초마다 업비트 가격 갱신
-    const timer = setInterval(fetchUpbit, 30000);
+    fetchData();
+    // 30초마다 갱신
+    const timer = setInterval(fetchData, 30000);
     return () => clearInterval(timer);
   }, []);
 
@@ -70,10 +82,10 @@ export default function PriceHeader({ data }: Props) {
       : `${Math.round(krwPrice / 10000).toLocaleString()}만원`
     : null;
 
-  // 김치 프리미엄 계산 (업비트 원화가 / (바이낸스 USD × 환율) - 1)
-  // 대략적 환율 1,380원 기준
-  const estimatedRate = krwPrice && data.price > 0 ? krwPrice / data.price : null;
-  const kimchiPremium = estimatedRate ? ((estimatedRate / 1380) - 1) * 100 : null;
+  // 김치 프리미엄 계산: (업비트 BTC원화가) / (바이낸스 USD × 실시간 USDT/KRW 환율) - 1
+  const kimchiPremium = (krwPrice && data.price > 0 && usdKrwRate)
+    ? ((krwPrice / (data.price * usdKrwRate)) - 1) * 100
+    : null;
 
   return (
     <div className="card-fintech flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 py-4">
