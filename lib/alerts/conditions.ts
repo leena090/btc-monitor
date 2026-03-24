@@ -21,7 +21,9 @@ export type AlertType =
   | 'whale_inflow_spike'    // 9. 고래 거래소 입금 급증
   | 'miner_outflow_spike'   // 10. 채굴자 대량 유출
   | 'exchange_reserve_drop' // 11. 거래소 BTC 보유량 급감
-  | 'mvrv_below_one';       // 12. MVRV < 1 진입
+  | 'mvrv_below_one'        // 12. MVRV < 1 진입
+  | 'squeeze_alert'         // 13. 숏/롱 스퀴즈 발생
+  | 'price_surge_3pct';     // 14. 3% 이상 급등
 
 // ──────────────────────────────────────────────
 // 알림 조건 인터페이스
@@ -124,6 +126,20 @@ export const ALERT_CONDITIONS: Record<AlertType, AlertCondition> = {
     title: '📉 MVRV < 1 — 역사적 바닥 구간 진입',
     cooldownSeconds: 7 * 24 * 60 * 60,  // 7일
     priority: 3,
+  },
+  // 💥 숏/롱 스퀴즈 발생 — 펀딩비 극단 + 가격 급변 동시 발생
+  squeeze_alert: {
+    type: 'squeeze_alert',
+    title: '💥 스퀴즈 발생',
+    cooldownSeconds: 4 * 60 * 60,       // 4시간
+    priority: 3,
+  },
+  // 🚀 3% 이상 급등 — 24h 기준
+  price_surge_3pct: {
+    type: 'price_surge_3pct',
+    title: '🚀 3% 이상 급등',
+    cooldownSeconds: 4 * 60 * 60,       // 4시간
+    priority: 2,
   },
 };
 
@@ -389,6 +405,52 @@ export function evaluateAlertConditions(params: {
       ].join('\n'),
       dedupIdentifier: new Date().toISOString().slice(0, 7), // 월 단위 dedup
     });
+  }
+
+  // ── 13. 스퀴즈 발생 — 펀딩비 극단 + 가격 반대 방향 급변 ──
+  if (price24hAgo > 0) {
+    const priceChangePct = ((currentPrice - price24hAgo) / price24hAgo) * 100;
+    // 숏 스퀴즈: 펀딩비 음수(숏 과밀) + 가격 급등 3%+
+    const isShortSqueeze = fundingRate < -0.03 && priceChangePct >= 3;
+    // 롱 스퀴즈: 펀딩비 양수(롱 과밀) + 가격 급락 3%+
+    const isLongSqueeze = fundingRate > 0.05 && priceChangePct <= -3;
+
+    if (isShortSqueeze || isLongSqueeze) {
+      const squeezeType = isShortSqueeze ? '🟢 숏 스퀴즈' : '🔴 롱 스퀴즈';
+      const desc = isShortSqueeze
+        ? '숏 포지션 과밀 상태에서 가격 급등 → 숏 청산 연쇄 발생'
+        : '롱 포지션 과밀 상태에서 가격 급락 → 롱 청산 연쇄 발생';
+      alerts.push({
+        type: 'squeeze_alert',
+        message: [
+          `${ALERT_CONDITIONS.squeeze_alert.title} — ${squeezeType}`,
+          ``,
+          `펀딩비: ${fundingRate > 0 ? '+' : ''}${fundingRate.toFixed(4)}%`,
+          `24h 변동: ${priceChangePct > 0 ? '+' : ''}${priceChangePct.toFixed(1)}%`,
+          `${desc}`,
+          `현재가: $${currentPrice.toLocaleString()}`,
+        ].join('\n'),
+        dedupIdentifier: `${isShortSqueeze ? 'short' : 'long'}_${today}`,
+      });
+    }
+  }
+
+  // ── 14. 3% 이상 급등 (24h) ──
+  if (price24hAgo > 0) {
+    const priceChangePct = ((currentPrice - price24hAgo) / price24hAgo) * 100;
+    if (priceChangePct >= 3) {
+      alerts.push({
+        type: 'price_surge_3pct',
+        message: [
+          `${ALERT_CONDITIONS.price_surge_3pct.title}`,
+          ``,
+          `24h 변동: +${priceChangePct.toFixed(1)}%`,
+          `$${price24hAgo.toLocaleString()} → $${currentPrice.toLocaleString()}`,
+          `상승 모멘텀 확인`,
+        ].join('\n'),
+        dedupIdentifier: `surge_${Math.floor(priceChangePct)}pct_${today}`,
+      });
+    }
   }
 
   return alerts;
