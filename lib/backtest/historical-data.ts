@@ -797,11 +797,11 @@ export const HALVING_CYCLES: HalvingCycleSummary[] = [
     number: 4,
     halvingDate: '2024-04-20',
     halvingPrice: 64000,
-    athDate: '2024-12-17',
-    athPrice: 108000,
-    monthsToAth: 8,  // 아직 진행 중 — 중간 ATH일 수 있음
-    returnToAth: 69,  // 아직 진행 중
+    athDate: '2025-10-06',
+    athPrice: 126198,
+    monthsToAth: 18,  // 리서치 확인: 17.8개월 (2025-10-06)
+    returnToAth: 97,   // $64K → $126K
     cycleLow: 15500,
-    maxDrawdown: -35,  // 108K → 70K (현재까지)
+    maxDrawdown: -46,  // 126K → 68K (2026-03 현재)
   },
 ];

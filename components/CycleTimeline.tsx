@@ -16,9 +16,9 @@ interface Props {
 export default function CycleTimeline({ monthsSinceHalving }: Props) {
   const currentMonths = monthsSinceHalving ?? 23;
 
-  // 사이클 평균 ATH 도달 기간 (1~3 사이클)
+  // 사이클 평균 ATH 도달 기간 (전체 4개 사이클)
   const avgMonthsToAth = Math.round(
-    HALVING_CYCLES.slice(0, 3).reduce((s, c) => s + c.monthsToAth, 0) / 3
+    HALVING_CYCLES.reduce((s, c) => s + c.monthsToAth, 0) / HALVING_CYCLES.length
   ); // ~16개월
 
   // 사이클 평균 수익률 (반감기→ATH, 1~3 사이클)
