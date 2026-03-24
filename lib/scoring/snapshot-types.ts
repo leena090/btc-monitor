@@ -157,6 +157,11 @@ export interface PerplexityData {
   naverSearchLow: boolean;
   /** 김치 프리미엄 (%) */
   kimchiPremium: number;
+  // ─── 고래/채굴자 (Perplexity AI 분석 결과) ───
+  /** 고래 거래소 입금 강도 */
+  whaleExchangeInflow: 'high' | 'normal' | 'low';
+  /** 채굴자 유출 강도 */
+  minerOutflow: 'spike' | 'normal' | 'low';
   fetchedAt: string;
 }
 

@@ -305,6 +305,9 @@ function assemblePerplexityData(raw: PerplexityData): SnapshotPerplexityData {
     naverSearchAnomaly: false,
     naverSearchLow: false,
     kimchiPremium: 0,
+    // 고래/채굴자 레벨 — Perplexity AI 분석 결과 전달
+    whaleExchangeInflow: raw.onchain?.whaleExchangeInflow ?? 'normal',
+    minerOutflow: raw.onchain?.minerOutflow ?? 'normal',
     fetchedAt: raw.fetchedAt,
   };
 }
@@ -390,6 +393,7 @@ function neutralPerplexity(): SnapshotPerplexityData {
     derivativeCvdUp: true, derivativeCvdStrength: 1,
     stablecoinTrend: 'flat',
     naverSearchAnomaly: false, naverSearchLow: false, kimchiPremium: 0,
+    whaleExchangeInflow: 'normal', minerOutflow: 'normal',
     fetchedAt: NEUTRAL_TIMESTAMP,
   };
 }
