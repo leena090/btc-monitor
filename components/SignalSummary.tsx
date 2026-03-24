@@ -71,8 +71,30 @@ export default function SignalSummary({ data }: Props) {
         </p>
 
         <div className="flex flex-col gap-1 text-xs" style={{ color: '#9098b1' }}>
-          {data.whale && <span>고래 입금비율: {(data.whale.whaleRatio * 100).toFixed(1)}%</span>}
-          {data.miner && <span>채굴자 MPI: {data.miner.mpi.toFixed(2)}</span>}
+          {/* 고래: 원시 수치 대신 의미 있는 해석 표시 */}
+          {data.whale && data.whale.whaleRatio > 0 ? (
+            <span>
+              {data.whale.whaleRatio >= 0.6 ? '⚠️ 거래소 대량 입금 — 매도 압력 높음'
+                : data.whale.whaleRatio >= 0.4 ? '⚡ 거래소 입금 증가 — 주의 필요'
+                : data.whale.whaleRatio >= 0.2 ? '✅ 정상 수준 — 특이사항 없음'
+                : '💰 거래소 입금 매우 적음 — 축적 신호'}
+            </span>
+          ) : (
+            <span>🔄 고래 데이터 수집 대기 중</span>
+          )}
+
+          {/* 채굴자: 원시 수치 대신 해석 */}
+          {data.miner && (data.miner.mpi !== 0 || data.miner.hashribbon) ? (
+            <span>
+              {data.miner.hashribbon ? '⛏️ 채굴자 항복 중 — 역사적 바닥 신호'
+                : data.miner.mpi >= 2 ? '⚠️ 채굴자 대량 매도 중'
+                : data.miner.mpi >= 0.5 ? '⛏️ 채굴자 일부 매도'
+                : data.miner.mpi <= -0.5 ? '💎 채굴자 보유 중 — 강세 신호'
+                : '⛏️ 채굴자 중립'}
+            </span>
+          ) : (
+            <span>🔄 채굴자 데이터 수집 대기 중</span>
+          )}
         </div>
       </div>
 
