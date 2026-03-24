@@ -36,7 +36,7 @@ function getFreshnessStatus(isoString: string): {
 
 export default function DataFreshness({ sources }: Props) {
   return (
-    <div className="p-5 rounded-xl border border-white/5"
+    <div className="p-5 rounded-xl border border-white/8"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -64,7 +64,7 @@ export default function DataFreshness({ sources }: Props) {
           const freshness = getFreshnessStatus(src.lastUpdated);
           return (
             <div key={src.source}
-                 className="flex items-center gap-3 py-1.5 border-b border-white/5 last:border-0">
+                 className="flex items-center gap-3 py-1.5 border-b border-white/8 last:border-0">
               {/* 신선도 점 */}
               <div className="w-2 h-2 rounded-full flex-shrink-0"
                    style={{
@@ -83,7 +83,7 @@ export default function DataFreshness({ sources }: Props) {
               </div>
 
               {/* 업데이트 주기 */}
-              <span className="text-xs" style={{ color: '#334155' }}>
+              <span className="text-xs" style={{ color: '#475569' }}>
                 ({src.updateFreq})
               </span>
 

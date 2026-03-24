@@ -22,7 +22,7 @@ export default function MinerPanel({ miner }: Props) {
   const mpiStatus = getMpiStatus(miner.mpi);
 
   return (
-    <div className="p-5 rounded-xl border border-white/5 h-full"
+    <div className="p-5 rounded-xl border border-white/8 h-full"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">

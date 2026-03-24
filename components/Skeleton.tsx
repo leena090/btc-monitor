@@ -22,7 +22,7 @@ export function Skeleton({ className = '' }: Props) {
 // 카드형 스켈레톤
 export function CardSkeleton({ height = 200 }: { height?: number }) {
   return (
-    <div className="rounded-xl border border-white/5 p-5 animate-pulse"
+    <div className="rounded-xl border border-white/8 p-5 animate-pulse"
          style={{ background: '#12121a', height }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">

@@ -37,44 +37,59 @@ export default function PriceHeader({ data }: Props) {
   });
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-4 py-3 rounded-xl border border-white/5"
-         style={{ background: '#12121a' }}>
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 py-4 rounded-xl border border-white/8"
+         style={{
+           background: 'linear-gradient(135deg, #12121a 0%, #0f0f1a 100%)',
+           borderColor: 'rgba(247,147,26,0.15)',
+         }}>
 
       {/* 왼쪽: 비트코인 레이블 */}
       <div className="flex items-center gap-3">
-        {/* BTC 아이콘 */}
-        <div className="flex items-center justify-center w-10 h-10 rounded-full text-xl font-bold"
-             style={{ background: 'rgba(247, 147, 26, 0.15)', color: '#f7931a' }}>
+        {/* BTC 아이콘 — 더 크게 */}
+        <div className="flex items-center justify-center w-12 h-12 rounded-full text-2xl font-bold"
+             style={{
+               background: 'rgba(247, 147, 26, 0.15)',
+               color: '#f7931a',
+               boxShadow: '0 0 16px rgba(247,147,26,0.2)',
+             }}>
           ₿
         </div>
         <div>
-          <div className="text-xs font-medium tracking-widest"
-               style={{ color: '#94a3b8' }}>
+          <div className="text-sm font-bold tracking-widest"
+               style={{ color: '#f7931a' }}>
             BITCOIN
           </div>
-          <div className="text-xs" style={{ color: '#475569' }}>BTC / USDT</div>
+          <div className="text-xs" style={{ color: '#64748b' }}>BTC / USDT · SPOT</div>
         </div>
       </div>
 
-      {/* 중앙: 현재 가격 (크게) */}
+      {/* 중앙: 현재 가격 (더 크게, 임팩트) */}
       <div className="flex flex-col items-start sm:items-center">
-        <div className="text-3xl sm:text-4xl font-bold tracking-tight"
-             style={{ color: '#e2e8f0', fontVariantNumeric: 'tabular-nums' }}>
+        <div className="text-4xl sm:text-5xl font-black tracking-tight"
+             style={{
+               color: '#ffffff',
+               fontVariantNumeric: 'tabular-nums',
+               textShadow: '0 0 30px rgba(255,255,255,0.1)',
+             }}>
           ${formattedPrice}
         </div>
       </div>
 
       {/* 오른쪽: 변동률 + 업데이트 시각 */}
-      <div className="flex flex-col items-start sm:items-end gap-1">
-        {/* 24h 변동률 */}
-        <div className={`text-lg font-semibold tabular-nums ${changeColor}`}>
-          {changeIcon} {Math.abs(data.priceChange24h).toFixed(2)}%
-          <span className="text-xs ml-1 opacity-70">24h</span>
+      <div className="flex flex-col items-start sm:items-end gap-1.5">
+        {/* 24h 변동률 — 배지 스타일 */}
+        <div className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold tabular-nums ${changeColor}`}
+             style={{
+               background: isPositive ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)',
+               border: isPositive ? '1px solid rgba(52,211,153,0.2)' : '1px solid rgba(239,68,68,0.2)',
+             }}>
+          <span>{changeIcon}</span>
+          <span>{Math.abs(data.priceChange24h).toFixed(2)}%</span>
+          <span className="text-xs opacity-60 ml-0.5">24h</span>
         </div>
 
         {/* 마지막 업데이트 시각 */}
         <div className="flex items-center gap-1.5">
-          {/* 실시간 상태 점 (초록) */}
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs" style={{ color: '#64748b' }}>
             {lastUpdate} 기준

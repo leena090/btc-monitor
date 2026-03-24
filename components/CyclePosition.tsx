@@ -46,7 +46,7 @@ export default function CyclePosition({ cycle, currentPrice }: Props) {
   const pricePosition = Math.max(0, Math.min(100, ((126200 - currentPrice) / priceRange) * 100));
 
   return (
-    <div className="p-5 rounded-xl border border-white/5 h-full"
+    <div className="p-5 rounded-xl border border-white/8 h-full"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -102,7 +102,7 @@ export default function CyclePosition({ cycle, currentPrice }: Props) {
         </div>
 
         {/* 타임라인 레이블 */}
-        <div className="flex justify-between text-xs mt-1" style={{ color: '#334155' }}>
+        <div className="flex justify-between text-xs mt-1" style={{ color: '#475569' }}>
           <span>반감기</span>
           <span>6mo</span>
           <span>18mo</span>
@@ -149,7 +149,7 @@ export default function CyclePosition({ cycle, currentPrice }: Props) {
                       {label}
                     </span>
                     <span className="text-xs tabular-nums"
-                          style={{ color: isNearCurrent ? '#f59e0b' : '#334155' }}>
+                          style={{ color: isNearCurrent ? '#f59e0b' : '#475569' }}>
                       ${price.toLocaleString()}
                     </span>
                   </div>
@@ -166,7 +166,7 @@ export default function CyclePosition({ cycle, currentPrice }: Props) {
       </div>
 
       {/* 다음 반감기 */}
-      <div className="flex items-center justify-between pt-3 border-t border-white/5">
+      <div className="flex items-center justify-between pt-3 border-t border-white/8">
         <span className="text-xs" style={{ color: '#64748b' }}>다음 반감기</span>
         <div className="text-right">
           <div className="text-xs font-medium" style={{ color: '#e2e8f0' }}>{nextHalving}</div>

@@ -100,7 +100,7 @@ export default function DashboardPage() {
       {/* ─── 상단 바: 타이틀 + 상태 표시 ─── */}
       <div className="flex items-center justify-between px-1">
         <h1 className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: '#334155' }}>
+            style={{ color: '#94a3b8' }}>
           BTC 시그널 모니터
         </h1>
         <div className="flex items-center gap-2">
@@ -110,7 +110,7 @@ export default function DashboardPage() {
           )}
           {/* 마지막 폴링 시각 */}
           {lastPolled && (
-            <span className="text-xs tabular-nums" style={{ color: '#334155' }}>
+            <span className="text-xs tabular-nums" style={{ color: '#475569' }}>
               {lastPolled.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })} 갱신
             </span>
           )}

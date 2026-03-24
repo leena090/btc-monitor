@@ -36,7 +36,7 @@ export default function OnchainPanel({ onchain, currentPrice }: Props) {
   const sthAbove = sthDiff >= 0; // 현재가가 STH 원가 이상
 
   return (
-    <div className="p-5 rounded-xl border border-white/5 h-full"
+    <div className="p-5 rounded-xl border border-white/8 h-full"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -85,16 +85,16 @@ export default function OnchainPanel({ onchain, currentPrice }: Props) {
                  opacity: 0.7,
                }} />
         </div>
-        <div className="flex justify-between text-xs mt-0.5" style={{ color: '#334155' }}>
+        <div className="flex justify-between text-xs mt-0.5" style={{ color: '#475569' }}>
           <span>0</span><span>1.0</span><span>2.4</span><span>3.7</span><span>5.0</span>
         </div>
       </div>
 
       {/* STH 실현가격 */}
-      <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+      <div className="flex items-center justify-between py-2.5 border-t border-white/8">
         <div>
           <div className="text-xs" style={{ color: '#64748b' }}>STH 실현가격</div>
-          <div className="text-xs mt-0.5" style={{ color: '#334155' }}>
+          <div className="text-xs mt-0.5" style={{ color: '#475569' }}>
             단기 보유자 손익분기
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function OnchainPanel({ onchain, currentPrice }: Props) {
       </div>
 
       {/* 거래소 BTC 보유량 */}
-      <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+      <div className="flex items-center justify-between py-2.5 border-t border-white/8">
         <div>
           <div className="text-xs" style={{ color: '#64748b' }}>거래소 BTC 보유량</div>
           <div className="text-xs mt-0.5" style={{ color: reserveTrend.color }}>

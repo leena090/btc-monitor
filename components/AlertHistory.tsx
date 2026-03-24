@@ -52,7 +52,7 @@ export default function AlertHistory({ alerts }: Props) {
   const recentAlerts = alerts.slice(0, 10);
 
   return (
-    <div className="p-5 rounded-xl border border-white/5"
+    <div className="p-5 rounded-xl border border-white/8"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -60,14 +60,14 @@ export default function AlertHistory({ alerts }: Props) {
             style={{ color: '#64748b' }}>
           알림 히스토리
         </h3>
-        <span className="text-xs" style={{ color: '#334155' }}>
+        <span className="text-xs" style={{ color: '#475569' }}>
           최근 {recentAlerts.length}건
         </span>
       </div>
 
       {/* 알림 목록 */}
       {recentAlerts.length === 0 ? (
-        <p className="text-xs text-center py-6" style={{ color: '#334155' }}>
+        <p className="text-xs text-center py-6" style={{ color: '#475569' }}>
           최근 알림 없음
         </p>
       ) : (
@@ -77,7 +77,7 @@ export default function AlertHistory({ alerts }: Props) {
             const icon = ALERT_ICONS[alert.type];
             return (
               <div key={alert.id}
-                   className="flex items-start gap-3 py-2 border-b border-white/5 last:border-0">
+                   className="flex items-start gap-3 py-2 border-b border-white/8 last:border-0">
                 {/* 심각도 점 */}
                 <div className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full"
                      style={{ background: sev.dot }} />
@@ -95,7 +95,7 @@ export default function AlertHistory({ alerts }: Props) {
 
                 {/* 시간 */}
                 <span className="text-xs flex-shrink-0 tabular-nums"
-                      style={{ color: '#334155' }}>
+                      style={{ color: '#475569' }}>
                   {formatRelativeTime(alert.timestamp)}
                 </span>
               </div>

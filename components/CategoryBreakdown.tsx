@@ -18,7 +18,7 @@ export default function CategoryBreakdown({ categories }: Props) {
   const [openId, setOpenId] = useState<number | null>(null);
 
   return (
-    <div className="p-5 rounded-xl border border-white/5"
+    <div className="p-5 rounded-xl border border-white/8"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -75,10 +75,10 @@ export default function CategoryBreakdown({ categories }: Props) {
                               style={{ color: '#475569' }}>
                           {(cat.weight * 100).toFixed(0)}%
                         </span>
-                        {/* 원점수 */}
-                        <span className="text-xs font-semibold tabular-nums w-8 text-right"
+                        {/* 원점수 — 소수점 1자리 고정 (float 오버플로우 방지) */}
+                        <span className="text-xs font-semibold tabular-nums w-12 text-right"
                               style={{ color: barColor }}>
-                          {cat.rawScore > 0 ? '+' : ''}{cat.rawScore}
+                          {cat.rawScore > 0 ? '+' : ''}{Number(cat.rawScore).toFixed(1)}
                         </span>
                         {/* 기여점수 */}
                         <span className="text-xs tabular-nums w-10 text-right"
@@ -88,8 +88,8 @@ export default function CategoryBreakdown({ categories }: Props) {
                       </div>
                     </div>
 
-                    {/* 수평 바 */}
-                    <div className="relative h-1.5 rounded-full overflow-hidden"
+                    {/* 수평 바 — 두께 개선 */}
+                    <div className="relative h-2 rounded-full overflow-hidden"
                          style={{ background: 'rgba(255,255,255,0.06)' }}>
                       {/* 중심선 (0점) — 50% 위치 */}
                       <div className="absolute top-0 bottom-0 w-px"
@@ -143,10 +143,10 @@ export default function CategoryBreakdown({ categories }: Props) {
       </div>
 
       {/* 컬럼 헤더 설명 (하단) */}
-      <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/5">
+      <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/8">
         <div className="w-5" />
         <div className="flex-1" />
-        <div className="flex items-center gap-3 text-xs" style={{ color: '#334155' }}>
+        <div className="flex items-center gap-3 text-xs" style={{ color: '#475569' }}>
           <span className="w-8 text-center">가중치</span>
           <span className="w-8 text-right">원점수</span>
           <span className="w-10 text-right">기여</span>

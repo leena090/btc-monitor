@@ -194,7 +194,7 @@ export default function HistoryPage() {
                 { label: 'BTC 가격', value: `$${latest.price.toLocaleString()}`, color: '#e2e8f0' },
               ].map(({ label, value, color }) => (
                 <div key={label}
-                     className="p-4 rounded-xl border border-white/5 text-center"
+                     className="p-4 rounded-xl border border-white/8 text-center"
                      style={{ background: '#12121a' }}>
                   <div className="text-xs mb-1" style={{ color: '#64748b' }}>{label}</div>
                   <div className="text-xl font-bold tabular-nums"
@@ -205,7 +205,7 @@ export default function HistoryPage() {
           )}
 
           {/* ─── 점수 차트 (24h) ─── */}
-          <div className="p-5 rounded-xl border border-white/5"
+          <div className="p-5 rounded-xl border border-white/8"
                style={{ background: '#12121a' }}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-semibold tracking-widest"
@@ -218,7 +218,7 @@ export default function HistoryPage() {
               </div>
             </div>
             <LineChart data={last24h} valueKey="score" color="#3b82f6" height={180} />
-            <div className="flex justify-between text-xs mt-2" style={{ color: '#334155' }}>
+            <div className="flex justify-between text-xs mt-2" style={{ color: '#475569' }}>
               <span>24시간 전</span>
               <span>12시간 전</span>
               <span>현재</span>
@@ -226,7 +226,7 @@ export default function HistoryPage() {
           </div>
 
           {/* ─── 가격 차트 (24h) ─── */}
-          <div className="p-5 rounded-xl border border-white/5"
+          <div className="p-5 rounded-xl border border-white/8"
                style={{ background: '#12121a' }}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-semibold tracking-widest"
@@ -239,7 +239,7 @@ export default function HistoryPage() {
               </div>
             </div>
             <LineChart data={last24h} valueKey="price" color="#f7931a" height={180} />
-            <div className="flex justify-between text-xs mt-2" style={{ color: '#334155' }}>
+            <div className="flex justify-between text-xs mt-2" style={{ color: '#475569' }}>
               <span>24시간 전</span>
               <span>12시간 전</span>
               <span>현재</span>
@@ -247,7 +247,7 @@ export default function HistoryPage() {
           </div>
 
           {/* ─── 최근 6시간 테이블 ─── */}
-          <div className="p-5 rounded-xl border border-white/5"
+          <div className="p-5 rounded-xl border border-white/8"
                style={{ background: '#12121a' }}>
             <h2 className="text-xs font-semibold tracking-widest mb-3"
                 style={{ color: '#64748b' }}>

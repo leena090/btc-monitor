@@ -31,7 +31,7 @@ export default function WhalePanel({ whale }: Props) {
   const changeIsPositive = whale.whaleRatioChange > 0;
 
   return (
-    <div className="p-5 rounded-xl border border-white/5 h-full"
+    <div className="p-5 rounded-xl border border-white/8 h-full"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -94,7 +94,7 @@ export default function WhalePanel({ whale }: Props) {
       </div>
 
       {/* 거래소 입금량 */}
-      <div className="flex items-center justify-between py-2 border-t border-white/5">
+      <div className="flex items-center justify-between py-2 border-t border-white/8">
         <span className="text-xs" style={{ color: '#64748b' }}>거래소 입금량 (24h)</span>
         <span className="text-sm font-semibold tabular-nums"
               style={{ color: '#e2e8f0' }}>

@@ -34,7 +34,7 @@ export default function TradeSetup({ setup, grade, finalScore }: Props) {
   const fmtPrice = (p: number) => `$${p.toLocaleString()}`;
 
   return (
-    <div className="p-5 rounded-xl border border-white/5"
+    <div className="p-5 rounded-xl border border-white/8"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">

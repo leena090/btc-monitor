@@ -40,52 +40,55 @@ export default function ScoreGauge({ data }: Props) {
   const gaugePath = `M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`;
 
   return (
-    <div className="flex flex-col items-center p-5 rounded-xl border border-white/5"
+    <div className="flex flex-col items-center p-5 rounded-xl border border-white/8"
          style={{ background: '#12121a' }}>
 
       {/* 제목 */}
-      <div className="text-xs font-semibold tracking-widest mb-4"
+      <div className="text-xs font-semibold tracking-widest mb-3"
            style={{ color: '#64748b' }}>
         종합 시그널 점수
       </div>
 
-      {/* 반원형 게이지 */}
-      <div className="relative" style={{ width: 200, height: 110 }}>
-        <svg viewBox="0 0 200 110" width="200" height="110">
+      {/* 반원형 게이지 — 더 크게 */}
+      <div className="relative" style={{ width: 220, height: 120 }}>
+        <svg viewBox="0 0 200 110" width="220" height="120">
           {/* 배경 트랙 (회색) */}
           <path
             d={gaugePath}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth="14"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="16"
             strokeLinecap="round"
           />
-          {/* 채워진 호 (점수 색상) */}
+          {/* 채워진 호 (점수 색상) — 더 굵고 빛남 */}
           <path
             d={gaugePath}
             fill="none"
             stroke={gradeColor}
-            strokeWidth="14"
+            strokeWidth="16"
             strokeLinecap="round"
             strokeDasharray={`${filled} ${empty}`}
-            style={{ transition: 'stroke-dasharray 0.8s ease', filter: `drop-shadow(0 0 6px ${gradeColor})` }}
+            style={{
+              transition: 'stroke-dasharray 0.8s ease',
+              filter: `drop-shadow(0 0 8px ${gradeColor}) drop-shadow(0 0 16px ${gradeColor}60)`,
+            }}
           />
         </svg>
 
         {/* 중앙 점수 텍스트 */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-2">
           {/* 최종 점수 */}
-          <div className="text-5xl font-bold tabular-nums leading-none"
-               style={{ color: gradeColor, textShadow: `0 0 20px ${gradeColor}60` }}>
-            {finalScore}
+          <div className="text-6xl font-black tabular-nums leading-none"
+               style={{ color: gradeColor, textShadow: `0 0 30px ${gradeColor}80` }}>
+            {Math.round(finalScore)}
           </div>
           {/* /100 */}
-          <div className="text-xs mt-0.5" style={{ color: '#475569' }}>/100</div>
+          <div className="text-xs mt-1" style={{ color: '#475569' }}>/100</div>
         </div>
       </div>
 
-      {/* 등급 배지 */}
-      <div className="mt-3 px-4 py-1.5 rounded-full text-sm font-bold tracking-wide"
+      {/* 등급 배지 — 더 크게 */}
+      <div className="mt-2 px-5 py-2 rounded-full text-base font-black tracking-wide"
            style={{
              background: `${gradeColor}22`,
              color: gradeColor,

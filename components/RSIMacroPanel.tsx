@@ -41,7 +41,7 @@ export default function RSIMacroPanel({ rsi }: Props) {
   ];
 
   return (
-    <div className="p-5 rounded-xl border border-white/5 h-full"
+    <div className="p-5 rounded-xl border border-white/8 h-full"
          style={{ background: '#12121a' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
@@ -123,7 +123,7 @@ export default function RSIMacroPanel({ rsi }: Props) {
           <ul className="space-y-1">
             {rsi.historyCases.map((c, i) => (
               <li key={i} className="text-xs" style={{ color: '#64748b' }}>
-                <span className="mr-1" style={{ color: '#334155' }}>{i + 1}.</span>
+                <span className="mr-1" style={{ color: '#475569' }}>{i + 1}.</span>
                 {c}
               </li>
             ))}
