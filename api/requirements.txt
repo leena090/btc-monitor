@@ -1,0 +1,6 @@
+# Vercel Python Runtime 의존성
+# 경로: /api/requirements.txt
+
+# TradingView 기술 지표 (RSI, MACD, MA, ADX, DXY)
+# 키 불필요, TradingView 내부 screener API 활용
+tradingview-ta==3.3.0

@@ -1,0 +1,155 @@
+// BTC Monitor — 웹훅 통합 알림 스크립트
+// 트레이딩뷰 Essential 구독 → 웹훅 알림 20개 허용
+//
+// 사용법:
+// 1. 아래 코드 전체를 TradingView Pine Script Editor에 붙여넣기
+// 2. BTCUSDT 일봉(1D) 차트에서 실행
+// 3. 알림 1개 생성: 조건 = "alert() function calls only"
+//    웹훅 URL = https://btc-monitor-six.vercel.app/api/webhook/tradingview
+//
+// 커버되는 알림 6가지:
+//   ① 주봉 RSI 40~50 구간 진입 (rsi_40_50_zone)
+//   ② 주봉 RSI 50 돌파 (rsi_50_breakout)
+//   ③ 월봉 RSI < 40 진입 — 베어 레짐 (rsi_bear_entry)
+//   ④ 일봉 RSI 30 이하 — 단기 과매도 (rsi_oversold)
+//   ⑤ 가격 MA200 교차 상향/하향 (ma200_cross)
+//   ⑥ MACD 골든/데드 크로스 (macd_cross)
+
+//@version=5
+indicator("BTC Monitor Webhook Alerts", overlay=true, max_lines_count=5)
+
+// ─────────────────────────────────────
+// 입력값 설정
+// ─────────────────────────────────────
+rsi_len = input.int(14, "RSI 기간", minval=1)
+
+// ─────────────────────────────────────
+// 멀티 타임프레임 데이터 수집
+// ─────────────────────────────────────
+// 일봉 RSI
+rsi_d = ta.rsi(close, rsi_len)
+
+// 주봉 RSI — request.security로 가져오기 (gaps=barmerge.gaps_off)
+rsi_w = request.security(syminfo.tickerid, "W", ta.rsi(close, rsi_len), gaps=barmerge.gaps_off)
+
+// 월봉 RSI
+rsi_m = request.security(syminfo.tickerid, "M", ta.rsi(close, rsi_len), gaps=barmerge.gaps_off)
+
+// MA200 (일봉)
+ma200 = ta.sma(close, 200)
+
+// MACD (12, 26, 9) 일봉
+[macd_line, signal_line, _] = ta.macd(close, 12, 26, 9)
+
+// ─────────────────────────────────────
+// 주봉/월봉 캔들 변환 시점 감지
+// weekly_bar = 새 주봉이 시작된 첫 일봉 → 주봉 확정 시점 감지
+// ─────────────────────────────────────
+new_week  = timeframe.change("W")
+new_month = timeframe.change("M")
+
+// ─────────────────────────────────────
+// 알림 조건 정의
+// ─────────────────────────────────────
+
+// ① 주봉 RSI 40~50 구간 — 새 주 시작 시점에만 체크
+//    이전 주봉이 40~50 밖에 있었고, 이번 주봉이 40~50 안으로 진입
+rsi_w_in_zone     = rsi_w >= 40 and rsi_w <= 50
+rsi_w_was_outside = rsi_w[1] < 40 or rsi_w[1] > 50
+cond_rsi_40_50    = new_week and rsi_w_in_zone and rsi_w_was_outside
+
+// ② 주봉 RSI 50 돌파 상향 — 직전 주봉이 40~50 안에 있었을 때만
+rsi_w_was_in_zone = rsi_w[1] >= 40 and rsi_w[1] <= 50
+cond_rsi_50_break = new_week and rsi_w > 50 and rsi_w_was_in_zone
+
+// ③ 월봉 RSI < 40 진입 — 베어 레짐 경고 (직전 월봉 >= 40)
+cond_rsi_bear     = new_month and rsi_m < 40 and rsi_m[1] >= 40
+
+// ④ 일봉 RSI 30 이하 — 단기 과매도 진입 (첫 진입 시만)
+cond_rsi_oversold = rsi_d < 30 and rsi_d[1] >= 30
+
+// ⑤ 가격 MA200 교차
+cond_ma200_up   = ta.crossover(close, ma200)
+cond_ma200_down = ta.crossunder(close, ma200)
+
+// ⑥ MACD 크로스
+cond_macd_golden = ta.crossover(macd_line, signal_line)
+cond_macd_dead   = ta.crossunder(macd_line, signal_line)
+
+// ─────────────────────────────────────
+// 웹훅 JSON 페이로드 생성 & alert() 호출
+// TradingView가 이 메시지를 webhook URL로 POST
+// ─────────────────────────────────────
+
+// ① rsi_40_50_zone
+if cond_rsi_40_50
+    alert(
+      '{"symbol":"' + syminfo.ticker + '",' +
+      '"indicator":"RSI",' +
+      '"value":' + str.tostring(rsi_w, "#.##") + ',' +
+      '"timeframe":"W",' +
+      '"alert":"rsi_40_50_zone"}',
+      alert.freq_once_per_bar
+    )
+
+// ② rsi_50_breakout
+if cond_rsi_50_break
+    alert(
+      '{"symbol":"' + syminfo.ticker + '",' +
+      '"indicator":"RSI",' +
+      '"value":' + str.tostring(rsi_w, "#.##") + ',' +
+      '"timeframe":"W",' +
+      '"alert":"rsi_50_breakout"}',
+      alert.freq_once_per_bar
+    )
+
+// ③ rsi_bear_entry
+if cond_rsi_bear
+    alert(
+      '{"symbol":"' + syminfo.ticker + '",' +
+      '"indicator":"RSI",' +
+      '"value":' + str.tostring(rsi_m, "#.##") + ',' +
+      '"timeframe":"M",' +
+      '"alert":"rsi_bear_entry"}',
+      alert.freq_once_per_bar
+    )
+
+// ④ rsi_oversold
+if cond_rsi_oversold
+    alert(
+      '{"symbol":"' + syminfo.ticker + '",' +
+      '"indicator":"RSI",' +
+      '"value":' + str.tostring(rsi_d, "#.##") + ',' +
+      '"timeframe":"D",' +
+      '"alert":"rsi_oversold"}',
+      alert.freq_once_per_bar
+    )
+
+// ⑤ ma200_cross (상향/하향 공통)
+if cond_ma200_up or cond_ma200_down
+    alert(
+      '{"symbol":"' + syminfo.ticker + '",' +
+      '"indicator":"MA200",' +
+      '"value":' + str.tostring(close, "#.##") + ',' +
+      '"value2":' + str.tostring(ma200, "#.##") + ',' +
+      '"timeframe":"D",' +
+      '"alert":"ma200_cross"}',
+      alert.freq_once_per_bar
+    )
+
+// ⑥ macd_cross (골든/데드 공통)
+if cond_macd_golden or cond_macd_dead
+    alert(
+      '{"symbol":"' + syminfo.ticker + '",' +
+      '"indicator":"MACD",' +
+      '"value":' + str.tostring(macd_line, "#.####") + ',' +
+      '"value2":' + str.tostring(signal_line, "#.####") + ',' +
+      '"timeframe":"D",' +
+      '"alert":"macd_cross"}',
+      alert.freq_once_per_bar
+    )
+
+// ─────────────────────────────────────
+// 차트 시각화 (보조선)
+// ─────────────────────────────────────
+plot(ma200, "MA200", color=color.orange, linewidth=2)
