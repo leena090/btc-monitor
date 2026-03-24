@@ -84,14 +84,13 @@ export default function DashboardPage() {
   if (error && !data) {
     return (
       <main className="max-w-3xl mx-auto px-4 py-6 flex items-center justify-center min-h-screen">
-        <div className="text-center p-8 rounded-xl border border-red-500/20"
-             style={{ background: 'rgba(239,68,68,0.05)' }}>
+        <div className="card-fintech text-center p-8">
           <div className="text-2xl mb-3">⚠️</div>
-          <p className="text-sm text-red-400 mb-2">데이터 로드 실패</p>
-          <p className="text-xs" style={{ color: '#64748b' }}>{error}</p>
+          <p className="text-sm font-semibold mb-2" style={{ color: '#ef4444' }}>데이터 로드 실패</p>
+          <p className="text-xs mb-4" style={{ color: '#9098b1' }}>{error}</p>
           <button
-            className="mt-4 px-4 py-2 rounded-lg text-xs"
-            style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)' }}
+            className="px-4 py-2 rounded-xl text-xs font-medium"
+            style={{ background: '#ef444412', color: '#ef4444' }}
             onClick={fetchData}
           >
             재시도
@@ -108,24 +107,21 @@ export default function DashboardPage() {
       {/* ─── 상단 바: 타이틀 + 상태 표시 ─── */}
       <div className="flex items-center justify-between px-1">
         <h1 className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: '#94a3b8' }}>
+            style={{ color: '#9098b1' }}>
           BTC 시그널 모니터
         </h1>
         <div className="flex items-center gap-2">
-          {/* 오류 표시 (데이터는 있지만 폴링 오류) */}
           {error && (
-            <span className="text-xs text-amber-400">⚠ 폴링 오류</span>
+            <span className="text-xs" style={{ color: '#f59e0b' }}>⚠ 폴링 오류</span>
           )}
-          {/* 마지막 폴링 시각 */}
           {lastPolled && (
-            <span className="text-xs tabular-nums" style={{ color: '#475569' }}>
+            <span className="text-xs tabular-nums" style={{ color: '#9098b1' }}>
               {lastPolled.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })} 갱신
             </span>
           )}
-          {/* 히스토리 링크 */}
           <a href="/history"
-             className="text-xs px-2 py-1 rounded"
-             style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}>
+             className="text-xs px-3 py-1.5 rounded-full font-medium"
+             style={{ background: '#7c5cfc15', color: '#7c5cfc' }}>
             히스토리
           </a>
         </div>

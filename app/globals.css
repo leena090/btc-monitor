@@ -1,37 +1,43 @@
 @import "tailwindcss";
 
-/* ─── BTC 모니터 다크 테마 전역 설정 ─── */
+/* ─── BTC 모니터 라이트 핀테크 테마 ─── */
 :root {
-  /* Bloomberg Terminal 스타일 다크 팔레트 */
-  --bg-base:    #0a0a0f;
-  --bg-card:    #12121a;
-  --bg-hover:   #1a1a24;
-  --text-primary:   #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted:     #475569;
-  --text-faint:     #475569;
-  --border:     rgba(255, 255, 255, 0.05);
+  /* 라이트 핀테크 팔레트 — 레퍼런스 기반 */
+  --bg-base:    #eef2fa;
+  --bg-card:    #ffffff;
+  --bg-hover:   #f8f9fc;
+  --text-primary:   #1a1d2e;
+  --text-secondary: #5b6178;
+  --text-muted:     #9098b1;
+  --text-faint:     #b4bcd0;
+  --border:     rgba(0, 0, 0, 0.06);
 
-  /* 등급 컬러 */
-  --grade-s:        #FFD700;
-  --grade-a:        #00ff88;
-  --grade-b:        #3b82f6;
-  --grade-c:        #f59e0b;
-  --grade-notrade:  #6b7280;
+  /* 등급 컬러 — 핀테크 스타일 (조금 더 부드럽게) */
+  --grade-s:        #00c471;
+  --grade-a:        #34d399;
+  --grade-b:        #f59e0b;
+  --grade-c:        #fb923c;
+  --grade-notrade:  #94a3b8;
   --grade-f:        #ef4444;
 
   /* 비트코인 브랜드 컬러 */
   --btc-orange: #f7931a;
+
+  /* 핀테크 포인트 컬러 */
+  --accent-purple: #7c5cfc;
+  --accent-blue:   #3b82f6;
+  --accent-teal:   #06b6d4;
 }
 
-/* 강제 다크 모드 — prefers-color-scheme 무시 */
+/* 라이트 모드 강제 */
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--bg-base);
-  color: var(--text-primary);
+  background: #eef2fa !important;
+  color: #1a1d2e !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* ─── 스크롤바 스타일 ─── */
@@ -45,18 +51,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* ─── 선택 텍스트 색상 ─── */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: #e2e8f0;
+  background: rgba(124, 92, 252, 0.2);
+  color: #1a1d2e;
 }
 
 /* ─── 애니메이션: 스켈레톤 펄스 ─── */
@@ -76,10 +82,18 @@ body {
 
 /* ─── HeroVerdict 펄스 애니메이션 (S/F 등급) ─── */
 @keyframes hero-pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 transparent; }
-  50%      { box-shadow: 0 0 30px 2px var(--hero-glow-color, rgba(0,255,136,0.15)); }
+  0%, 100% { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+  50%      { box-shadow: 0 4px 32px var(--hero-glow-color, rgba(0,196,113,0.2)); }
 }
 
 .animate-hero-pulse {
   animation: hero-pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ─── 카드 공통 스타일 ─── */
+.card-fintech {
+  background: var(--bg-card);
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
