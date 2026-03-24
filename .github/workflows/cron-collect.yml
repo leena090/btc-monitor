@@ -1,0 +1,41 @@
+name: BTC Data Collection Cron
+
+# 5분마다 실행 — Vercel Hobby 플랜 크론 대체
+# GitHub Actions는 무료로 5분 간격 스케줄 지원
+on:
+  schedule:
+    # UTC 기준 */5 분마다 실행
+    # 주의: GitHub Actions 실제 실행은 ±1~2분 지연 가능
+    - cron: '*/5 * * * *'
+  # 수동 테스트용 — Actions 탭에서 "Run workflow" 버튼 활성화
+  workflow_dispatch:
+
+jobs:
+  collect:
+    name: Collect BTC Data
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Trigger data collection endpoint
+        # CRON_SECRET으로 인증 → btc-monitor API 호출
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "https://btc-monitor-six.vercel.app/api/cron/collect")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          # 200 또는 202 이외 상태코드 시 실패 처리
+          if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "202" ]; then
+            echo "::error::Data collection failed with status $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Data collection triggered successfully"
