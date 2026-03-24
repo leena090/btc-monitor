@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function CycleTimeline({ monthsSinceHalving }: Props) {
-  const currentMonths = monthsSinceHalving ?? 23;
+  const currentMonths = Math.round(monthsSinceHalving ?? 23);
 
   // 사이클 평균 ATH 도달 기간 (전체 4개 사이클)
   const avgMonthsToAth = Math.round(
@@ -44,7 +44,7 @@ export default function CycleTimeline({ monthsSinceHalving }: Props) {
           2024년 반감기 이후
         </div>
         <div className="text-3xl font-black" style={{ color: '#1a1d2e' }}>
-          {currentMonths}개월째
+          {Math.round(currentMonths)}개월째
         </div>
         <div className="text-xs mt-1" style={{ color: '#9098b1' }}>
           역사적 ATH 평균 도달: {avgMonthsToAth}개월
