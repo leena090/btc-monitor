@@ -1,15 +1,23 @@
 'use client';
 
 /**
- * 메인 대시보드 페이지
- * 5초마다 /api/data 폴링 → 전체 대시보드 업데이트
- * 모바일 반응형 (텔레그램 알림 → 폰에서 확인 시나리오)
+ * 메인 대시보드 페이지 — 3-Tier Progressive Disclosure
+ *
+ * Tier 1: HeroVerdict — "사야 하나 말아야 하나" 3초 판단
+ * Tier 2: SignalSummary — 시장온도 / 큰손동향 / 매매타이밍 3장 카드
+ * Tier 3: DetailAccordion — 기존 11카테고리 + 상세 패널 (접이식)
+ *
+ * 50대 퇴직금 투자자가 화면 열자마자 판단 가능하도록 설계
+ * 5초마다 /api/data 폴링
  */
 
 import { useEffect, useState, useCallback } from 'react';
 import type { SignalResult } from '@/lib/scoring/types';
 import { DashboardSkeleton } from '@/components/Skeleton';
 import PriceHeader from '@/components/PriceHeader';
+import HeroVerdict from '@/components/HeroVerdict';
+import SignalSummary from '@/components/SignalSummary';
+import DetailAccordion, { AccordionSection } from '@/components/DetailAccordion';
 import ScoreGauge from '@/components/ScoreGauge';
 import RSIMacroPanel from '@/components/RSIMacroPanel';
 import CyclePosition from '@/components/CyclePosition';
@@ -66,7 +74,7 @@ export default function DashboardPage() {
   // ─── 최초 로딩 중 ───
   if (loading) {
     return (
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-3xl mx-auto px-4 py-6">
         <DashboardSkeleton />
       </main>
     );
@@ -75,7 +83,7 @@ export default function DashboardPage() {
   // ─── 오류 상태 ───
   if (error && !data) {
     return (
-      <main className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-center min-h-screen">
+      <main className="max-w-3xl mx-auto px-4 py-6 flex items-center justify-center min-h-screen">
         <div className="text-center p-8 rounded-xl border border-red-500/20"
              style={{ background: 'rgba(239,68,68,0.05)' }}>
           <div className="text-2xl mb-3">⚠️</div>
@@ -96,7 +104,7 @@ export default function DashboardPage() {
   if (!data) return null;
 
   return (
-    <main className="max-w-7xl mx-auto px-3 py-4 space-y-4">
+    <main className="max-w-3xl mx-auto px-3 py-4 space-y-4">
       {/* ─── 상단 바: 타이틀 + 상태 표시 ─── */}
       <div className="flex items-center justify-between px-1">
         <h1 className="text-xs font-bold tracking-widest uppercase"
@@ -123,59 +131,86 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ─── 1행: PriceHeader ─── */}
+      {/* ═══ Tier 0: 현재 가격 ═══ */}
       <PriceHeader
         data={{
-          // price/priceChange24h는 optional — 없으면 0으로 폴백
           price: data.price ?? 0,
           priceChange24h: data.priceChange24h ?? 0,
           timestamp: data.timestamp,
         }}
       />
 
-      {/* ─── 2행: ScoreGauge / RSIMacroPanel / CyclePosition ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <ScoreGauge
-          data={{
-            finalScore: data.finalScore,
-            grade: data.grade,
-            confidence: data.confidence,
-            sigma: data.sigma,
-            rsiMacroBonus: data.rsiMacroBonus,
-            fibConfluenceBonus: data.fibConfluenceBonus,
-          }}
-        />
-        {/* rsi/cycle은 optional — 없으면 패널 숨김 */}
-        {data.rsi && <RSIMacroPanel rsi={data.rsi} />}
-        {data.cycle && <CyclePosition cycle={data.cycle} currentPrice={data.price ?? 0} />}
-      </div>
+      {/* ═══ Tier 1: HeroVerdict — 3초 투자 판단 (화면의 주인공) ═══ */}
+      <HeroVerdict
+        data={{
+          finalScore: data.finalScore,
+          grade: data.grade,
+          confidence: data.confidence,
+          sigma: data.sigma,
+          rsiMacroBonus: data.rsiMacroBonus,
+          fibConfluenceBonus: data.fibConfluenceBonus,
+          direction: data.direction,
+        }}
+      />
 
-      {/* ─── 3행: CategoryBreakdown (전체 너비) ─── */}
-      <CategoryBreakdown categories={data.categories} />
+      {/* ═══ Tier 2: SignalSummary — 3장 요약 카드 ═══ */}
+      <SignalSummary data={data} />
 
-      {/* ─── 4행: WhalePanel / MinerPanel / OnchainPanel ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* whale/miner/onchain은 optional — 없으면 패널 숨김 */}
-        {data.whale && <WhalePanel whale={data.whale} />}
-        {data.miner && <MinerPanel miner={data.miner} />}
-        {data.onchain && <OnchainPanel onchain={data.onchain} currentPrice={data.price ?? 0} />}
-      </div>
+      {/* ═══ Tier 3: 상세 분석 (접이식 아코디언) ═══ */}
+      <DetailAccordion>
+        {/* 매매 셋업 (있을 때만) */}
+        {data.tradeSetup && (
+          <AccordionSection title="트레이드 셋업" icon="📊" subtitle="진입/손절/목표가">
+            <TradeSetup
+              setup={data.tradeSetup}
+              grade={data.grade}
+              finalScore={data.finalScore}
+            />
+          </AccordionSection>
+        )}
 
-      {/* ─── 5행: TradeSetup (전체 너비, tradeSetup optional) ─── */}
-      {data.tradeSetup && (
-        <TradeSetup
-          setup={data.tradeSetup}
-          grade={data.grade}
-          finalScore={data.finalScore}
-        />
-      )}
+        {/* 11카테고리 분석 */}
+        <AccordionSection title="11카테고리 분석" icon="📋" subtitle="원점수 · 가중치 · 기여도">
+          <CategoryBreakdown categories={data.categories} />
+        </AccordionSection>
 
-      {/* ─── 6행: AlertHistory / DataFreshness ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* alertHistory/dataFreshness optional — 없으면 빈 배열로 폴백 */}
-        <AlertHistory alerts={data.alertHistory ?? []} />
-        <DataFreshness sources={data.dataFreshness ?? []} />
-      </div>
+        {/* 점수 게이지 + RSI + 사이클 */}
+        <AccordionSection title="기술적 지표" icon="📈" subtitle="RSI · 사이클 · 점수 상세">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+            <ScoreGauge
+              data={{
+                finalScore: data.finalScore,
+                grade: data.grade,
+                confidence: data.confidence,
+                sigma: data.sigma,
+                rsiMacroBonus: data.rsiMacroBonus,
+                fibConfluenceBonus: data.fibConfluenceBonus,
+              }}
+            />
+            {data.rsi && <RSIMacroPanel rsi={data.rsi} />}
+            {data.cycle && <CyclePosition cycle={data.cycle} currentPrice={data.price ?? 0} />}
+          </div>
+        </AccordionSection>
+
+        {/* 고래 + 채굴자 + 온체인 */}
+        {(data.whale || data.miner || data.onchain) && (
+          <AccordionSection title="온체인 분석" icon="🔗" subtitle="고래 · 채굴자 · 온체인">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+              {data.whale && <WhalePanel whale={data.whale} />}
+              {data.miner && <MinerPanel miner={data.miner} />}
+              {data.onchain && <OnchainPanel onchain={data.onchain} currentPrice={data.price ?? 0} />}
+            </div>
+          </AccordionSection>
+        )}
+
+        {/* 알림 히스토리 + 데이터 신선도 */}
+        <AccordionSection title="시스템 상태" icon="🔔" subtitle="알림 · 데이터 신선도">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+            <AlertHistory alerts={data.alertHistory ?? []} />
+            <DataFreshness sources={data.dataFreshness ?? []} />
+          </div>
+        </AccordionSection>
+      </DetailAccordion>
 
       {/* ─── 하단 여백 ─── */}
       <div className="h-8" />

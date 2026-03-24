@@ -2,7 +2,7 @@
 
 /**
  * Skeleton — 로딩 스켈레톤 컴포넌트
- * 데이터 폴링 중 화면 깜빡임 방지를 위한 플레이스홀더
+ * 3-Tier 레이아웃에 맞는 플레이스홀더
  */
 
 interface Props {
@@ -39,37 +39,40 @@ export function CardSkeleton({ height = 200 }: { height?: number }) {
   );
 }
 
-// 대시보드 전체 로딩 스켈레톤
+// 대시보드 전체 로딩 스켈레톤 — 3-Tier 레이아웃
 export function DashboardSkeleton() {
   return (
     <div className="space-y-4">
       {/* PriceHeader 스켈레톤 */}
       <CardSkeleton height={72} />
 
-      {/* ScoreGauge + RSI + Cycle 스켈레톤 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <CardSkeleton height={240} />
-        <CardSkeleton height={240} />
-        <CardSkeleton height={240} />
+      {/* HeroVerdict 스켈레톤 — 가장 크게 */}
+      <div className="rounded-2xl border border-white/8 p-8 animate-pulse"
+           style={{ background: '#12121a' }}>
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          {/* 게이지 자리 */}
+          <div className="w-40 h-24 rounded-full" style={{ background: 'rgba(255,255,255,0.04)' }} />
+          {/* 텍스트 자리 */}
+          <div className="flex-1 space-y-3">
+            <div className="h-8 w-3/4 rounded" style={{ background: 'rgba(255,255,255,0.06)' }} />
+            <div className="h-4 w-full rounded" style={{ background: 'rgba(255,255,255,0.04)' }} />
+            <div className="h-10 w-48 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)' }} />
+          </div>
+        </div>
       </div>
 
-      {/* CategoryBreakdown 스켈레톤 */}
-      <CardSkeleton height={360} />
-
-      {/* Whale + Miner + Onchain 스켈레톤 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <CardSkeleton height={200} />
-        <CardSkeleton height={200} />
-        <CardSkeleton height={200} />
+      {/* SignalSummary 3카드 스켈레톤 */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <CardSkeleton height={160} />
+        <CardSkeleton height={160} />
+        <CardSkeleton height={160} />
       </div>
 
-      {/* TradeSetup 스켈레톤 */}
-      <CardSkeleton height={200} />
-
-      {/* AlertHistory + DataFreshness 스켈레톤 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CardSkeleton height={280} />
-        <CardSkeleton height={280} />
+      {/* 상세 분석 아코디언 스켈레톤 */}
+      <div className="space-y-2">
+        <CardSkeleton height={48} />
+        <CardSkeleton height={48} />
+        <CardSkeleton height={48} />
       </div>
     </div>
   );

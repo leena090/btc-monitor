@@ -69,7 +69,7 @@ export default function CyclePosition({ cycle, currentPrice }: Props) {
           </span>
           <span className="text-xl font-bold tabular-nums"
                 style={{ color: phase.color }}>
-            {cycle.monthsSinceHalving}개월
+            {Math.round(cycle.monthsSinceHalving)}개월
           </span>
         </div>
 

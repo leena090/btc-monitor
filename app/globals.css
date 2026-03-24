@@ -73,3 +73,13 @@ body {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+
+/* ─── HeroVerdict 펄스 애니메이션 (S/F 등급) ─── */
+@keyframes hero-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50%      { box-shadow: 0 0 30px 2px var(--hero-glow-color, rgba(0,255,136,0.15)); }
+}
+
+.animate-hero-pulse {
+  animation: hero-pulse-glow 2.5s ease-in-out infinite;
+}
