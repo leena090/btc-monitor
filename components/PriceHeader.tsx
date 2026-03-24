@@ -23,31 +23,23 @@ export default function PriceHeader({ data }: Props) {
   const [krwChange, setKrwChange] = useState<number | null>(null);
   const [usdKrwRate, setUsdKrwRate] = useState<number | null>(null);
 
-  // 업비트 BTC/KRW + 환율 동시 조회 (공개 API, 키 불필요)
+  // 업비트 BTC/KRW + USDT/KRW 한 번에 조회 (공개 API, 키 불필요)
   useEffect(() => {
     const fetchData = async () => {
-      // 업비트 BTC/KRW 가격
       try {
-        const res = await fetch('https://api.upbit.com/v1/ticker?markets=KRW-BTC');
-        if (res.ok) {
-          const [ticker] = await res.json();
-          if (ticker) {
-            setKrwPrice(ticker.trade_price);
-            setKrwChange(ticker.signed_change_rate * 100);
+        // 두 마켓을 한 번에 조회 (API 호출 1회로 통합)
+        const res = await fetch('https://api.upbit.com/v1/ticker?markets=KRW-BTC,KRW-USDT');
+        if (!res.ok) return;
+        const tickers = await res.json();
+        for (const t of tickers) {
+          if (t.market === 'KRW-BTC') {
+            setKrwPrice(t.trade_price);
+            setKrwChange(t.signed_change_rate * 100);
+          } else if (t.market === 'KRW-USDT') {
+            setUsdKrwRate(t.trade_price);
           }
         }
-      } catch { /* 업비트 실패 시 무시 */ }
-
-      // 실시간 USD/KRW 환율 (업비트 USDT/KRW로 크립토 기준 환율 산출)
-      try {
-        const res = await fetch('https://api.upbit.com/v1/ticker?markets=KRW-USDT');
-        if (res.ok) {
-          const [ticker] = await res.json();
-          if (ticker) {
-            setUsdKrwRate(ticker.trade_price);
-          }
-        }
-      } catch { /* 환율 조회 실패 시 무시 */ }
+      } catch { /* 업비트 API 실패 시 무시 — USD 가격은 정상 표시 */ }
     };
 
     fetchData();
